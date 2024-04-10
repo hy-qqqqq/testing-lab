@@ -2,6 +2,7 @@
 
 > 312551032 彭暄宇
 
+Testing Lab
 - Backend language: `TypeScript`
 - Frontend language: `React`
 
@@ -14,6 +15,7 @@
 > In this test, I've tested the three branches of this API. And choose one of them as the example testcase for this report.
 
 - Testing tool: `vitest` framework
+- Testing method: Unit testing
 - Testing strategy:
     - *Scenario*: Mock the `updateTodoById` function in `repo/todo.ts`, so that it always return the given todo object.
     - *Target*: The API `/api/v1/todos:id` with `PUT` method.
@@ -96,25 +98,66 @@ describe('Todo API Testing', () => {
 
 ### Result
 
-![](./assets/backend-vitest.png)
+![backend-vitest](./assets/backend-vitest.png)
+
+可以看到 `src/routes/todo.ts` 中的 35~49 行 (PUT API) 已被測試 cover 到
 
 ## Testcase 2 (Frontend)
 
 ### Description
+
+> [!NOTE]
+> Test name: Todo Website Sevice Testing. After user input and press the Add Todo button, the new todo item should be added on the page.
+> This test aims to test the functionality of the Add Todo button.
+
 - Testing tool: `cypress` framework
-- Testing target
-- Testing strategy
+- Testing method: End-to-end testing
+- Testing strategy:
+    - *Scenario*:
+      - The user has input the name and description of todo item.
+      - The user then pressed the Add Todo button.
+    - *Target*: Add Todo button functionality.
+    - *Expectation*: The new todo item should be added on the page.
+
+### Analysis
+
+![frontend-website](./assets/frontend-website.png)
+
+Todo website 中使用者可以看到幾個按鈕 (功能)
+- `Add Todo` button: 新增一個 todo item
+- `Complete` button: 完成一個 todo item
+- `Delete` button: 刪除一個 todo item
+
+在這個測試主要針對 `Add Todo` 的功能做測試，當使用者在 `Name` `Description` 兩個欄位輸入內容，並且按下 `Add Todo` 按鈕。新增的 todo item 會顯示在下方的清單之中。
+例如：圖中的 item 會有以下 elements，可以將這些做為 Expectation:
+- name
+- description
+- `Complete` button
+- `Delete` button
 
 ### Implementation
 
+`service.cy.ts`
+```js
+describe('Todo Website Sevice Testing', () => {
+  const todo_name = 'test'
+  const todo_desc = '1234'
+
+  it('After user input and press the Add Todo button, the new todo item should be added on the page', () => {
+    // arrange
+    cy.visit('/')
+
+    // act
+    cy.get('#name').type(todo_name)
+    cy.get('#description').type(todo_desc)
+    cy.get('.Form > button').click()
+
+    // assert
+    cy.get('.Card').contains(todo_name)
+  })
+})
+```
+
 ### Result
 
-
-撰寫兩個 test cases (Backend 或 Frontend 不限)，並附上該測試的說明報告
-
-    附上程式碼片段
-    測試報告(截圖)
-    說明
-        描述前端或後端的測試
-        使用的測試工具
-        測試策略 (如測試場景、測試主體、預期結果等)
+![frontend-cypress](./assets/frontend-cypress.png)
